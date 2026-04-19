@@ -1436,6 +1436,7 @@
         <div class="tab" onclick="switchTab('rpt','invdetails');genInvDetailsReport();">🧾 تفاصيل الفواتير</div>
         <div class="tab" onclick="switchTab('rpt','payrollrpt');genPayrollReport();">👥 كشف الرواتب</div>
         <div class="tab" onclick="switchTab('rpt','deliveryrpt');genDeliveryReport();">🛵 تطبيقات التوصيل</div>
+        <div class="tab" onclick="switchTab('rpt','multimonth');initMultiMonthReport();">📊 مقارنة الأشهر</div>
       </div>
 
       <!-- DAILY CLOSE -->
@@ -1490,6 +1491,47 @@
           <button class="btn btn-outline" style="color:var(--green);border-color:var(--green);" onclick="exportTableToCSV('period-report-content','تقفيل-فترة')">📊 Excel</button>
         </div>
         <div id="period-report-content"></div>
+      </div>
+
+      <!-- MULTI-MONTH COMPARISON REPORT -->
+      <div class="tab-content" id="rpt-multimonth">
+        <div style="background:var(--gold-bg);border:1px solid rgba(184,134,11,0.25);border-radius:9px;padding:14px 18px;margin-bottom:16px;font-size:12px;color:var(--gold);font-weight:700;">
+          📊 تقرير مقارنة الأشهر — اختر سنة وحدد الأشهر التي تريد مقارنتها في جدول واحد شامل يحتوي على جميع بيانات التقفيل الشهري
+        </div>
+        <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:18px;flex-wrap:wrap;">
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <label style="font-size:12px;color:var(--text2);font-weight:700;">📅 السنة:</label>
+            <select id="mmrpt-yr" style="background:#fff;border:1.5px solid var(--border);border-radius:7px;padding:8px 12px;color:var(--text);font-family:'Cairo',sans-serif;font-size:13px;outline:none;min-width:100px;"></select>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <label style="font-size:12px;color:var(--text2);font-weight:700;">📋 اختر الأشهر (يمكن اختيار أكثر من شهر):</label>
+            <div id="mmrpt-months-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;background:#fff;border:1.5px solid var(--border);border-radius:8px;padding:10px;">
+              <label style="display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer;white-space:nowrap;"><input type="checkbox" value="1" class="mmrpt-mon-cb" style="accent-color:var(--gold);width:15px;height:15px;"> يناير</label>
+              <label style="display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer;white-space:nowrap;"><input type="checkbox" value="2" class="mmrpt-mon-cb" style="accent-color:var(--gold);width:15px;height:15px;"> فبراير</label>
+              <label style="display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer;white-space:nowrap;"><input type="checkbox" value="3" class="mmrpt-mon-cb" style="accent-color:var(--gold);width:15px;height:15px;"> مارس</label>
+              <label style="display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer;white-space:nowrap;"><input type="checkbox" value="4" class="mmrpt-mon-cb" style="accent-color:var(--gold);width:15px;height:15px;"> أبريل</label>
+              <label style="display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer;white-space:nowrap;"><input type="checkbox" value="5" class="mmrpt-mon-cb" style="accent-color:var(--gold);width:15px;height:15px;"> مايو</label>
+              <label style="display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer;white-space:nowrap;"><input type="checkbox" value="6" class="mmrpt-mon-cb" style="accent-color:var(--gold);width:15px;height:15px;"> يونيو</label>
+              <label style="display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer;white-space:nowrap;"><input type="checkbox" value="7" class="mmrpt-mon-cb" style="accent-color:var(--gold);width:15px;height:15px;"> يوليو</label>
+              <label style="display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer;white-space:nowrap;"><input type="checkbox" value="8" class="mmrpt-mon-cb" style="accent-color:var(--gold);width:15px;height:15px;"> أغسطس</label>
+              <label style="display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer;white-space:nowrap;"><input type="checkbox" value="9" class="mmrpt-mon-cb" style="accent-color:var(--gold);width:15px;height:15px;"> سبتمبر</label>
+              <label style="display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer;white-space:nowrap;"><input type="checkbox" value="10" class="mmrpt-mon-cb" style="accent-color:var(--gold);width:15px;height:15px;"> أكتوبر</label>
+              <label style="display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer;white-space:nowrap;"><input type="checkbox" value="11" class="mmrpt-mon-cb" style="accent-color:var(--gold);width:15px;height:15px;"> نوفمبر</label>
+              <label style="display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer;white-space:nowrap;"><input type="checkbox" value="12" class="mmrpt-mon-cb" style="accent-color:var(--gold);width:15px;height:15px;"> ديسمبر</label>
+            </div>
+            <div style="display:flex;gap:8px;margin-top:2px;">
+              <button onclick="document.querySelectorAll('.mmrpt-mon-cb').forEach(c=>c.checked=true)" style="background:var(--gold-bg);border:1px solid var(--gold);color:var(--gold);border-radius:6px;padding:4px 10px;font-family:'Cairo',sans-serif;font-size:11px;cursor:pointer;font-weight:700;">✅ تحديد الكل</button>
+              <button onclick="document.querySelectorAll('.mmrpt-mon-cb').forEach(c=>c.checked=false)" style="background:var(--surface2);border:1px solid var(--border);color:var(--text2);border-radius:6px;padding:4px 10px;font-family:'Cairo',sans-serif;font-size:11px;cursor:pointer;font-weight:700;">❌ إلغاء الكل</button>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px;align-self:flex-end;">
+            <button class="btn btn-gold" onclick="genMultiMonthReport()">📊 عرض التقرير</button>
+            <button class="btn btn-outline" onclick="printReportWithSelector('multimonth-report-print')">🖨️ طباعة</button>
+            <button class="btn btn-outline" style="color:var(--red);border-color:var(--red);" onclick="saveReportAsPDF('multimonth-report-content','مقارنة-الأشهر')">💾 PDF</button>
+            <button class="btn btn-outline" style="color:var(--green);border-color:var(--green);" onclick="exportTableToCSV('multimonth-report-content','مقارنة-الأشهر')">📊 Excel</button>
+          </div>
+        </div>
+        <div id="multimonth-report-content"></div>
       </div>
 
       <!-- SUPPLIER STATEMENT -->
@@ -7081,11 +7123,390 @@ function genPeriodReport() {
     <button class="btn btn-outline" onclick="window._printPeriodLabel='${from} – ${to}';window._printReportName='تقفيل فترة ${from} – ${to}';printReportWithSelector('period-report-print')" style="margin-top:10px;">🖨️ طباعة التقرير</button>`;
 }
 
+// ============ MULTI-MONTH COMPARISON REPORT ============
+function initMultiMonthReport() {
+  // Year selector is already populated by populateAllYearSelectors()
+  // Auto-select current month if none checked
+  const checked = document.querySelectorAll('.mmrpt-mon-cb:checked');
+  if (!checked.length) {
+    const curMon = new Date().getMonth() + 1;
+    const cb = document.querySelector(`.mmrpt-mon-cb[value="${curMon}"]`);
+    if (cb) cb.checked = true;
+  }
+}
+
+function genMultiMonthReport() {
+  const year = +document.getElementById('mmrpt-yr').value;
+  const selectedMonths = Array.from(document.querySelectorAll('.mmrpt-mon-cb:checked')).map(c=>+c.value).sort((a,b)=>a-b);
+  if (!selectedMonths.length) return showAlert('يرجى اختيار شهر واحد على الأقل', true);
+
+  const mns = ['','يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+
+  // حساب بيانات كل شهر
+  const monthData = selectedMonths.map(month => {
+    const inMonth = d => { const dt = new Date(d); return dt.getMonth()+1 === month && dt.getFullYear() === year; };
+    const periodEnd = new Date(year, month, 0);
+
+    const monSales = sales.filter(s => inMonth(s.date));
+    const cashIn   = monSales.reduce((a,s)=>a+ +s.cash,0);
+    const cardIn   = monSales.reduce((a,s)=>a+ +s.card,0);
+    const delivIn  = monSales.reduce((a,s)=>a+ +s.delivery,0);
+    const totalSales = cashIn + cardIn + delivIn;
+    const salesVatBase = totalSales / 1.15;
+    const salesVatAmt  = totalSales - salesVatBase;
+
+    const monInv = invoices.filter(i => inMonth(i.date));
+    const totalPurchWithVat = monInv.filter(i=>i.vatApplied).reduce((a,i)=>a+ +i.total,0);
+    const totalPurchNoVat   = monInv.filter(i=>!i.vatApplied).reduce((a,i)=>a+ +i.total,0);
+    const totalPurchVat     = monInv.reduce((a,i)=>a+(+i.vatAmt||0),0);
+    const totalPurch        = totalPurchWithVat + totalPurchNoVat;
+
+    const monExp = expenses.filter(e=>inMonth(e.date) && e.cat!=='رواتب');
+    const expWithVat   = monExp.filter(e=>e.applyVat);
+    const expNoVat     = monExp.filter(e=>!e.applyVat);
+    const totalExpWithVat = expWithVat.reduce((a,e)=>a+ +e.total,0);
+    const totalExpNoVat   = expNoVat.reduce((a,e)=>a+ +e.total,0);
+    const totalExpVat     = expWithVat.reduce((a,e)=>a+(+e.vatAmt||0),0);
+    const totalExp        = totalExpWithVat + totalExpNoVat;
+
+    const monBon = bonuses.filter(b=>inMonth(b.date)).reduce((a,b)=>a+ +b.amount,0);
+    const monAdv = advances.filter(a=>inMonth(a.date)).reduce((a,b)=>a+ +b.amount,0);
+    const monDed = deductions.filter(d=>inMonth(d.date)).reduce((a,b)=>a+ +b.amount,0);
+    const eligibleEmps = employees.filter(e=>e.status==='active'&&(!e.date||new Date(e.date)<=periodEnd));
+    const totalSalaries = eligibleEmps.reduce((a,e)=>a+Math.round(getEffectiveSalary(e.id,month,year)*100)/100,0);
+    const salariesFinalPaid = (payrollPayments||[]).filter(p=>inMonth(p.date)).reduce((a,p)=>a+ +p.amount,0);
+    const partialPaidThisMonth = (partialPayments||[]).filter(p=>inMonth(p.date)).reduce((a,p)=>a+ +p.amount,0);
+    const advancesPaidThisMonth = (advances||[]).filter(a=>inMonth(a.date)).reduce((a,b)=>a+ +b.amount,0);
+    const salariesPaid = salariesFinalPaid + partialPaidThisMonth + advancesPaidThisMonth;
+
+    const monExtExp = (extExpenses||[]).filter(e=>inMonth(e.date));
+    const totalExtExp        = monExtExp.reduce((a,e)=>a+(+(e.total||e.amount)),0);
+    const totalExtExpNoVat   = monExtExp.filter(e=>!e.applyVat).reduce((a,e)=>a+(+(e.total||e.amount)),0);
+    const totalExtExpWithVat = monExtExp.filter(e=>e.applyVat).reduce((a,e)=>a+(+(e.total||e.amount)),0);
+    const totalExtExpVat     = monExtExp.filter(e=>e.applyVat).reduce((a,e)=>a+(+e.vatAmt||0),0);
+
+    const totalFixedExp    = fixedExpenses.reduce((a,e)=>a+(+(e.total||e.amount)),0);
+    const totalFixedExpVat = fixedExpenses.filter(e=>e.applyVat).reduce((a,e)=>a+(+e.vatAmt||0),0);
+
+    const totalWasteVal = (wasteLog||[]).filter(w=>inMonth(w.date)).reduce((a,w)=>a+ +w.value,0);
+
+    const monPay  = payments.filter(p=>inMonth(p.date));
+    const cashOut = monPay.filter(p=>p.method==='cash').reduce((a,p)=>a+ +p.amount,0);
+    const bankOut = monPay.filter(p=>p.method==='bank').reduce((a,p)=>a+ +p.amount,0);
+    const totalSupPay = cashOut + bankOut;
+
+    const monExtPay  = (extPayments||[]).filter(p=>inMonth(p.date));
+    const totalExtPay = monExtPay.reduce((a,p)=>a+ +p.amount,0);
+    const extPayCash  = monExtPay.filter(p=>p.method==='cash').reduce((a,p)=>a+ +p.amount,0);
+    const extPayBank  = monExtPay.filter(p=>p.method!=='cash').reduce((a,p)=>a+ +p.amount,0);
+
+    const totalExpenses = totalPurch + salariesPaid + totalExp + totalExtExp + totalFixedExp;
+    const profit        = totalSales - totalExpenses;
+    const vatDeductible = totalPurchVat + totalExpVat + totalExtExpVat + totalFixedExpVat;
+    const vatNet        = salesVatAmt - vatDeductible;
+
+    return {
+      month, monthName: mns[month],
+      cashIn, cardIn, delivIn, totalSales, salesVatBase, salesVatAmt,
+      totalPurchWithVat, totalPurchNoVat, totalPurchVat, totalPurch,
+      totalExpWithVat, totalExpNoVat, totalExpVat, totalExp,
+      totalSalaries, salariesFinalPaid, partialPaidThisMonth, advancesPaidThisMonth, salariesPaid,
+      monBon, monAdv, monDed,
+      totalExtExpNoVat, totalExtExpWithVat, totalExtExpVat, totalExtExp,
+      totalFixedExp, totalFixedExpVat,
+      totalWasteVal,
+      cashOut, bankOut, totalSupPay,
+      totalExtPay, extPayCash, extPayBank,
+      totalExpenses, profit, vatDeductible, vatNet
+    };
+  });
+
+  const sum = key => monthData.reduce((a,m)=>a+m[key],0);
+
+  // عمود الإجمالي
+  const totals = {
+    monthName: 'الإجمالي',
+    cashIn: sum('cashIn'), cardIn: sum('cardIn'), delivIn: sum('delivIn'), totalSales: sum('totalSales'),
+    salesVatBase: sum('salesVatBase'), salesVatAmt: sum('salesVatAmt'),
+    totalPurchWithVat: sum('totalPurchWithVat'), totalPurchNoVat: sum('totalPurchNoVat'),
+    totalPurchVat: sum('totalPurchVat'), totalPurch: sum('totalPurch'),
+    totalExpWithVat: sum('totalExpWithVat'), totalExpNoVat: sum('totalExpNoVat'),
+    totalExpVat: sum('totalExpVat'), totalExp: sum('totalExp'),
+    totalSalaries: sum('totalSalaries'), salariesFinalPaid: sum('salariesFinalPaid'),
+    partialPaidThisMonth: sum('partialPaidThisMonth'), advancesPaidThisMonth: sum('advancesPaidThisMonth'),
+    salariesPaid: sum('salariesPaid'), monBon: sum('monBon'), monAdv: sum('monAdv'), monDed: sum('monDed'),
+    totalExtExpNoVat: sum('totalExtExpNoVat'), totalExtExpWithVat: sum('totalExtExpWithVat'),
+    totalExtExpVat: sum('totalExtExpVat'), totalExtExp: sum('totalExtExp'),
+    totalFixedExp: sum('totalFixedExp'), totalFixedExpVat: sum('totalFixedExpVat'),
+    totalWasteVal: sum('totalWasteVal'),
+    cashOut: sum('cashOut'), bankOut: sum('bankOut'), totalSupPay: sum('totalSupPay'),
+    totalExtPay: sum('totalExtPay'), extPayCash: sum('extPayCash'), extPayBank: sum('extPayBank'),
+    totalExpenses: sum('totalExpenses'), profit: sum('profit'),
+    vatDeductible: sum('vatDeductible'), vatNet: sum('vatNet')
+  };
+
+  const allCols = [...monthData, totals]; // الأعمدة: كل شهر + الإجمالي
+
+  // دالة بناء خلية قيمة
+  const tdVal = (v, color, bold) =>
+    `<td style="text-align:center;padding:7px 10px;white-space:nowrap;color:${color||'var(--text)'};font-weight:${bold?'800':'600'};font-size:13px;">${fmt(v)}</td>`;
+
+  // دالة بناء خلية الإجمالي (آخر عمود بتنسيق مميز)
+  const tdTotal = (v, color) =>
+    `<td style="text-align:center;padding:7px 10px;white-space:nowrap;color:${color||'var(--gold)'};font-weight:900;font-size:13px;background:linear-gradient(135deg,#fff9e6,#fffde7);border-right:2px solid var(--gold);">${fmt(v)}</td>`;
+
+  // دالة صف بيانات (البيانات عمودية، الأشهر أفقية)
+  const dataRow = (label, key, color, isBold, isTotal) => {
+    const monthCells = monthData.map(m => tdVal(m[key], color, isBold)).join('');
+    const totalCell  = tdTotal(totals[key], color);
+    const labelStyle = isTotal
+      ? `font-weight:900;background:var(--surface2);padding:8px 14px;font-size:13px;color:${color||'var(--text)'};`
+      : `font-weight:${isBold?'800':'600'};padding:7px 14px;font-size:13px;color:var(--text2);`;
+    return `<tr>
+      <td style="${labelStyle}white-space:nowrap;">${label}</td>
+      ${monthCells}${totalCell}
+    </tr>`;
+  };
+
+  // صف عنوان قسم — خلفية داكنة + اسم كل شهر فوق عموده
+  const sectionHeader = (label, color, bg) => {
+    const monthCells = monthData.map(m =>
+      `<td style="text-align:center;padding:8px 10px;font-size:12px;font-weight:900;color:#fff;background:#1a365d;border-right:1px solid rgba(255,255,255,0.15);white-space:nowrap;">${m.monthName}</td>`
+    ).join('');
+    const totalCell = `<td style="text-align:center;padding:8px 10px;font-size:12px;font-weight:900;color:#f6d860;background:#1a365d;border-right:2px solid #b8860b;white-space:nowrap;">📊 الإجمالي</td>`;
+    return `<tr style="background:#1a365d;">
+      <td style="padding:10px 14px;font-size:13px;font-weight:900;color:#fff;background:#1a365d;border-top:3px solid ${color||'#b8860b'};white-space:nowrap;">${label}</td>
+      ${monthCells}${totalCell}
+    </tr>`;
+  };
+
+  // صف فاصل خفيف بين الأقسام
+  const spacer = () => `<tr style="height:5px;background:#e8edf3;"><td colspan="${allCols.length+1}"></td></tr>`;
+
+  // رأس الجدول (أسماء الأشهر)
+  const headCols = monthData.map(m =>
+    `<th style="text-align:center;padding:10px 12px;background:var(--gold);color:#fff;font-size:13px;font-weight:800;white-space:nowrap;min-width:110px;">${m.monthName}</th>`
+  ).join('');
+  const headTotal = `<th style="text-align:center;padding:10px 12px;background:var(--gold);color:#fff;font-size:13px;font-weight:900;white-space:nowrap;border-right:2px solid rgba(255,255,255,0.5);min-width:110px;">📊 الإجمالي</th>`;
+
+  const tableHtml = `
+  <div style="overflow-x:auto;">
+  <table style="border-collapse:collapse;width:100%;font-size:13px;">
+    <thead>
+      <tr>
+        <th style="text-align:right;padding:10px 14px;background:#2d3748;color:#fff;font-size:13px;font-weight:800;white-space:nowrap;min-width:200px;">البيان</th>
+        ${headCols}
+        ${headTotal}
+      </tr>
+    </thead>
+    <tbody>
+
+      ${sectionHeader('💰 الإيرادات','var(--green)','#e8f5e9')}
+      ${dataRow('مبيعات نقدية',        'cashIn',      'var(--green)', false)}
+      ${dataRow('مبيعات شبكة / بطاقة', 'cardIn',      'var(--green)', false)}
+      ${dataRow('مبيعات توصيل',         'delivIn',     'var(--green)', false)}
+      ${dataRow('وعاء الضريبة (بدون ضريبة)', 'salesVatBase','var(--text2)',false)}
+      ${dataRow('ضريبة القيمة المضافة على الإيرادات', 'salesVatAmt','var(--blue)',false)}
+      ${dataRow('إجمالي الإيرادات (شامل الضريبة)', 'totalSales','var(--green)',true,true)}
+
+      ${spacer()}
+      ${sectionHeader('🛒 المشتريات وفواتير الموردين','var(--red)','#fdecea')}
+      ${dataRow('فواتير المشتريات بدون ضريبة',         'totalPurchNoVat',   'var(--red)',  false)}
+      ${dataRow('ضريبة فواتير المشتريات',              'totalPurchVat',     'var(--blue)', false)}
+      ${dataRow('فواتير المشتريات شامل الضريبة',        'totalPurchWithVat', 'var(--red)',  false)}
+      ${dataRow('إجمالي المشتريات',                    'totalPurch',        'var(--red)',  true, true)}
+
+      ${spacer()}
+      ${sectionHeader('🧾 فواتير المصروفات المتغيرة','var(--orange)','#fff3e0')}
+      ${dataRow('فواتير المصروفات بدون ضريبة',         'totalExpNoVat',   'var(--orange)', false)}
+      ${dataRow('ضريبة فواتير المصروفات',              'totalExpVat',     'var(--blue)',   false)}
+      ${dataRow('فواتير المصروفات شامل الضريبة',        'totalExpWithVat', 'var(--orange)', false)}
+      ${dataRow('إجمالي المصروفات المتغيرة',           'totalExp',        'var(--orange)', true, true)}
+
+      ${spacer()}
+      ${sectionHeader('👥 رواتب الموظفين','var(--purple)','#f3e8ff')}
+      ${dataRow('الرواتب الأساسية المستحقة',    'totalSalaries',         'var(--purple)', false)}
+      ${dataRow('العلاوات والمكافآت',           'monBon',                'var(--green)',  false)}
+      ${dataRow('الخصومات',                    'monDed',                'var(--red)',    false)}
+      ${dataRow('سلف مدفوعة هذا الشهر',        'advancesPaidThisMonth', 'var(--red)',    false)}
+      ${dataRow('دفعات جزئية مدفوعة',          'partialPaidThisMonth',  'var(--orange)', false)}
+      ${dataRow('رواتب نهائية مصروفة',         'salariesFinalPaid',     'var(--green)',  false)}
+      ${dataRow('إجمالي ما صُرف للموظفين فعلياً','salariesPaid',        'var(--purple)', true, true)}
+
+      ${spacer()}
+      ${sectionHeader('🌐 المصروفات الخارجية','#6d28d9','rgba(109,40,217,0.07)')}
+      ${dataRow('مصروفات خارجية بدون ضريبة',         'totalExtExpNoVat',   '#6d28d9',    false)}
+      ${dataRow('ضريبة المصروفات الخارجية',           'totalExtExpVat',     'var(--blue)', false)}
+      ${dataRow('مصروفات خارجية شامل الضريبة',        'totalExtExpWithVat', '#6d28d9',    false)}
+      ${dataRow('إجمالي المصروفات الخارجية',          'totalExtExp',        '#6d28d9',    true, true)}
+
+      ${spacer()}
+      ${sectionHeader('📌 المصاريف الثابتة الشهرية','var(--blue)','#e3f2fd')}
+      ${dataRow('ضريبة المصاريف الثابتة',    'totalFixedExpVat', 'var(--blue)', false)}
+      ${dataRow('إجمالي المصاريف الثابتة',  'totalFixedExp',    'var(--blue)', true, true)}
+
+      ${spacer()}
+      ${sectionHeader('💳 دفعات الموردين','var(--blue)','#e8f0fe')}
+      ${dataRow('دفعات نقدية للموردين',      'cashOut',    'var(--red)',  false)}
+      ${dataRow('تحويلات بنكية للموردين',    'bankOut',    'var(--red)',  false)}
+      ${dataRow('إجمالي دفعات الموردين',     'totalSupPay','var(--blue)', true, true)}
+
+      ${spacer()}
+      ${sectionHeader('🌐 دفعات المصروفات الخارجية','#6d28d9','rgba(109,40,217,0.05)')}
+      ${dataRow('دفعات خارجية نقدية',           'extPayCash',  '#6d28d9',    false)}
+      ${dataRow('دفعات خارجية بنكية',           'extPayBank',  '#6d28d9',    false)}
+      ${dataRow('إجمالي دفعات المصروفات الخارجية','totalExtPay','#6d28d9',   true, true)}
+
+      ${spacer()}
+      ${sectionHeader('📋 ملخص الضريبة (VAT)','var(--blue)','#e3f2fd')}
+      ${dataRow('ضريبة الإيرادات (مستحقة للهيئة)',        'salesVatAmt',   'var(--green)', false)}
+      ${dataRow('ضريبة المشتريات (قابلة للخصم)',          'totalPurchVat', 'var(--blue)',  false)}
+      ${dataRow('ضريبة المصروفات المتغيرة (قابلة للخصم)', 'totalExpVat',   'var(--blue)',  false)}
+      ${dataRow('ضريبة المصروفات الخارجية (قابلة للخصم)', 'totalExtExpVat','var(--blue)',  false)}
+      ${dataRow('ضريبة المصاريف الثابتة (قابلة للخصم)',   'totalFixedExpVat','var(--blue)',false)}
+      ${dataRow('إجمالي الضريبة القابلة للخصم',           'vatDeductible', 'var(--blue)',  true)}
+      <tr style="background:#fff3e0;">
+        <td style="padding:8px 14px;font-weight:800;font-size:13px;white-space:nowrap;">صافي الضريبة المستحقة</td>
+        ${monthData.map(m => {
+          const isPositive = m.vatNet >= 0;
+          const label = isPositive ? 'للهيئة' : 'لصالحك';
+          return `<td style="text-align:center;padding:7px 10px;font-weight:800;color:${isPositive?'var(--red)':'var(--green)'};">
+            ${fmt(Math.abs(m.vatNet))}<br><span style="font-size:10px;font-weight:700;">${label}</span>
+          </td>`;
+        }).join('')}
+        <td style="text-align:center;padding:7px 10px;font-weight:900;background:linear-gradient(135deg,#fff9e6,#fffde7);border-right:2px solid var(--gold);color:${totals.vatNet>=0?'var(--red)':'var(--green)'};">
+          ${fmt(Math.abs(totals.vatNet))}<br><span style="font-size:10px;font-weight:700;">${totals.vatNet>=0?'للهيئة':'لصالحك'}</span>
+        </td>
+      </tr>
+
+      ${spacer()}
+      ${sectionHeader('📊 ملخص المصاريف الكلية وصافي الربح','var(--text)','#f0f4f8')}
+      ${dataRow('إجمالي المشتريات',        'totalPurch',    'var(--red)',    false)}
+      ${dataRow('إجمالي المصروفات المتغيرة','totalExp',     'var(--orange)', false)}
+      ${dataRow('إجمالي الرواتب المصروفة', 'salariesPaid', 'var(--purple)', false)}
+      ${dataRow('إجمالي المصروفات الخارجية','totalExtExp',  '#6d28d9',       false)}
+      ${dataRow('إجمالي المصاريف الثابتة', 'totalFixedExp','var(--blue)',   false)}
+      ${dataRow('إجمالي المصاريف الكلية',  'totalExpenses','var(--red)',    true, true)}
+      ${dataRow('📉 الهدر (للمعلومية فقط)','totalWasteVal','var(--text3)',  false)}
+      <tr style="background:linear-gradient(135deg,#f0fff4,#fff);">
+        <td style="padding:10px 14px;font-weight:900;font-size:14px;white-space:nowrap;">💰 صافي الربح / الخسارة</td>
+        ${monthData.map(m => {
+          const isProfit = m.profit >= 0;
+          const margin = m.totalSales > 0 ? ((m.profit/m.totalSales)*100).toFixed(1) : '0.0';
+          return `<td style="text-align:center;padding:8px 10px;font-weight:900;font-size:14px;color:${isProfit?'var(--green)':'var(--red)'};">
+            ${fmt(m.profit)}<br><span style="font-size:10px;color:var(--text3);font-weight:600;">${margin}%</span>
+          </td>`;
+        }).join('')}
+        <td style="text-align:center;padding:8px 10px;font-weight:900;font-size:15px;background:linear-gradient(135deg,#fff9e6,#fffde7);border-right:2px solid var(--gold);color:${totals.profit>=0?'var(--green)':'var(--red)'};">
+          ${fmt(totals.profit)}<br><span style="font-size:10px;color:var(--text3);font-weight:600;">${totals.totalSales>0?((totals.profit/totals.totalSales)*100).toFixed(1):0}%</span>
+        </td>
+      </tr>
+
+    </tbody>
+  </table>
+  </div>`;
+
+  // جدول الملخص السفلي
+  const tSales=totals.totalSales, tProfit=totals.profit, tVatNet=totals.vatNet;
+
+  // دالة بناء صف ملخص
+  const sumRow = (label, key, color, rowStyle) => {
+    const cells = monthData.map(m =>
+      `<td style="text-align:center;padding:8px 10px;font-weight:700;font-size:13px;color:${color};">${fmt(m[key])}</td>`
+    ).join('');
+    const totCell = `<td style="text-align:center;padding:8px 10px;font-weight:900;font-size:13px;color:${color};background:linear-gradient(135deg,#fff9e6,#fffde7);border-right:2px solid #b8860b;">${fmt(totals[key])}</td>`;
+    return `<tr style="${rowStyle||'border-bottom:1px solid #e2e8f0;'}">
+      <td style="padding:9px 14px;font-weight:700;font-size:13px;color:${color};white-space:nowrap;">${label}</td>
+      ${cells}${totCell}
+    </tr>`;
+  };
+
+  // صف إجمالي المصاريف الكلية — مميز بخلفية داكنة
+  const totalExpRow = () => {
+    const cells = monthData.map(m =>
+      `<td style="text-align:center;padding:10px;font-weight:900;font-size:14px;color:#fff;background:#7f1d1d;">${fmt(m.totalExpenses)}</td>`
+    ).join('');
+    const totCell = `<td style="text-align:center;padding:10px;font-weight:900;font-size:14px;color:#fff;background:#991b1b;border-right:2px solid #b8860b;">${fmt(totals.totalExpenses)}</td>`;
+    return `<tr style="border-top:3px solid #c0392b;">
+      <td style="padding:10px 14px;font-weight:900;font-size:14px;color:#fff;background:#7f1d1d;white-space:nowrap;">🔴 إجمالي المصاريف الكلية</td>
+      ${cells}${totCell}
+    </tr>`;
+  };
+
+  // صف صافي الربح / الخسارة
+  const profitRow = () => {
+    const cells = monthData.map(m => {
+      const isP = m.profit >= 0;
+      const margin = m.totalSales > 0 ? ((m.profit/m.totalSales)*100).toFixed(1) : '0.0';
+      const bg = isP ? '#14532d' : '#7f1d1d';
+      return `<td style="text-align:center;padding:11px 10px;font-weight:900;font-size:14px;color:#fff;background:${bg};">
+        ${fmt(m.profit)}<br><span style="font-size:10px;font-weight:600;opacity:0.85;">${margin}%</span>
+      </td>`;
+    }).join('');
+    const isTP = totals.profit >= 0;
+    const totMargin = tSales > 0 ? ((totals.profit/tSales)*100).toFixed(1) : '0.0';
+    const totBg = isTP ? '#166534' : '#991b1b';
+    const totCell = `<td style="text-align:center;padding:11px 10px;font-weight:900;font-size:15px;color:#fff;background:${totBg};border-right:2px solid #b8860b;">
+      ${fmt(totals.profit)}<br><span style="font-size:10px;font-weight:600;opacity:0.85;">${totMargin}%</span>
+    </td>`;
+    return `<tr style="border-top:4px solid ${isTP?'#1a7a4a':'#c0392b'};">
+      <td style="padding:11px 14px;font-weight:900;font-size:14px;color:#fff;background:${isTP?'#14532d':'#7f1d1d'};white-space:nowrap;">💰 صافي الربح / الخسارة</td>
+      ${cells}${totCell}
+    </tr>`;
+  };
+
+  // رأس جدول الملخص
+  const sumHeadCols = monthData.map(m =>
+    `<th style="text-align:center;padding:10px 12px;background:#1a365d;color:#fff;font-size:13px;font-weight:800;white-space:nowrap;min-width:110px;">${m.monthName}</th>`
+  ).join('');
+
+  const summaryHtml = `
+  <div style="margin-top:28px;border:2px solid #1a365d;border-radius:12px;overflow:hidden;box-shadow:0 4px 18px rgba(26,54,93,0.18);">
+    <div style="background:linear-gradient(135deg,#1a365d,#2d4e87);padding:13px 18px;display:flex;align-items:center;gap:10px;">
+      <span style="font-size:17px;">📊</span>
+      <span style="color:#fff;font-size:15px;font-weight:900;">ملخص المقارنة — إجمالي الأشهر المختارة</span>
+    </div>
+    <div style="overflow-x:auto;">
+    <table style="border-collapse:collapse;width:100%;font-size:13px;">
+      <thead>
+        <tr>
+          <th style="text-align:right;padding:10px 14px;background:#2d3748;color:#fff;font-size:13px;font-weight:900;white-space:nowrap;min-width:220px;border-left:1px solid rgba(255,255,255,0.1);">البيان</th>
+          ${sumHeadCols}
+          <th style="text-align:center;padding:10px 12px;background:#b8860b;color:#fff;font-size:13px;font-weight:900;white-space:nowrap;min-width:110px;">📊 الإجمالي</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${sumRow('💰 إجمالي الإيرادات',            'totalSales',  '#1a7a4a')}
+        ${sumRow('🛒 إجمالي المشتريات',             'totalPurch',  '#c0392b')}
+        ${sumRow('🧾 إجمالي المصروفات المتغيرة',   'totalExp',    '#c05621')}
+        ${sumRow('👥 إجمالي الرواتب المصروفة',     'salariesPaid','#6d28d9')}
+        ${sumRow('🌐 إجمالي المصروفات الخارجية',   'totalExtExp', '#6d28d9')}
+        ${sumRow('📌 إجمالي المصاريف الثابتة',     'totalFixedExp','#1565c0')}
+        ${totalExpRow()}
+        ${profitRow()}
+      </tbody>
+    </table>
+    </div>
+  </div>`;
+
+  const title = `مقارنة الأشهر — ${year} (${selectedMonths.map(m=>mns[m]).join(' ، ')})`;
+  document.getElementById('multimonth-report-content').innerHTML = `
+    <div id="multimonth-report-print">
+      <div style="text-align:center;margin-bottom:20px;">
+        <h3 style="color:var(--gold);font-size:18px;font-weight:900;">📊 ${title}</h3>
+        <p style="color:var(--text2);font-size:12px;margin-top:4px;">البيانات صفوف مجمّعة بأقسام — الأشهر أعمدة — آخر عمود الإجمالي</p>
+      </div>
+      ${tableHtml}
+      ${summaryHtml}
+    </div>
+    <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;">
+      <button class="btn btn-outline" onclick="window._printReportName='${title}';printReportWithSelector('multimonth-report-print')">🖨️ طباعة التقرير</button>
+      <button class="btn btn-outline" style="color:var(--red);border-color:var(--red);" onclick="saveReportAsPDF('multimonth-report-content','${title}')">💾 حفظ PDF</button>
+      <button class="btn btn-outline" style="color:var(--green);border-color:var(--green);" onclick="exportTableToCSV('multimonth-report-content','مقارنة-الأشهر')">📊 تصدير Excel</button>
+    </div>`;
+}
+
 function genSupplierStatement() {
-  const supId=document.getElementById('rpt-sup-id').value;
-  const from=document.getElementById('rpt-sup-from').value;
-  const to=document.getElementById('rpt-sup-to').value;
-  if(!supId) return showAlert('اختر مورداً',true);
   const sup=suppliers.find(s=>s.id===supId);
 
   // حساب الرصيد الافتتاحي: الرصيد الافتتاحي المدخل يدوياً + المعاملات قبل تاريخ البداية
@@ -7754,6 +8175,7 @@ function populateAllYearSelectors() {
   const yr = now.getFullYear();
   const selectors = [
     {id:'rpt-yr', sel:yr},
+    {id:'mmrpt-yr', sel:yr},
     {id:'rpt-inc-yr', sel:yr},
     {id:'vat-yr', sel:yr},
     {id:'payroll-year', sel:yr},
@@ -8145,8 +8567,6 @@ function buildPrintHeader(periodLabel, reportName) {
     ${pLabel ? `<div style="font-size:12px;color:#333;margin-top:3px;">الفترة: <strong>${pLabel}</strong></div>` : ''}
   </div>`;
 }
-
-// ============ EXPORT TO EXCEL (CSV) ============
 function exportTableToCSV(tableId, filename) {
   const table = document.querySelector('#' + tableId + ' table') || document.getElementById(tableId);
   if (!table) return showAlert('لا يوجد جدول للتصدير', true);
@@ -8262,6 +8682,13 @@ function getPrintStyles() {
       table { table-layout: fixed; word-break: break-word; page-break-inside:avoid; }
       th, td { white-space: normal !important; }
       .rpt-section-table, .rpt-summary-table { page-break-inside: avoid; }
+      /* ضمان ظهور خلفية عناوين الأقسام الداكنة عند الطباعة */
+      tr[style*="background:#1a365d"] td,
+      tr[style*="background:#1a365d"] { background:#1a365d !important; color:#fff !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+      tr[style*="background:#7f1d1d"] td,
+      tr[style*="background:#7f1d1d"] { background:#7f1d1d !important; color:#fff !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+      tr[style*="background:#14532d"] td,
+      tr[style*="background:#14532d"] { background:#14532d !important; color:#fff !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
       /* Scale content to fit one page */
       .print-scale-wrap { transform: scale(0.92); transform-origin: top right; width: 109%; }
     }
@@ -8832,6 +9259,9 @@ function getCustomPrintStyles() {
       button{display:none!important;}
       table{width:100% !important;max-width:100% !important;table-layout:fixed !important;}
       td,th{word-break:break-word !important;overflow-wrap:break-word !important;white-space:normal !important;}
+      tr[style*="background:#1a365d"] td,tr[style*="background:#1a365d"]{background:#1a365d !important;color:#fff !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+      tr[style*="background:#7f1d1d"] td,tr[style*="background:#7f1d1d"]{background:#7f1d1d !important;color:#fff !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+      tr[style*="background:#14532d"] td,tr[style*="background:#14532d"]{background:#14532d !important;color:#fff !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
     }
   `;
 }
@@ -8905,6 +9335,9 @@ function saveReportAsImage(htmlContent, periodLabel, reportName) {
       .closing-balance-box{display:block!important;border-radius:12px;padding:20px;margin-top:18px;}
       .closing-balance-box div{display:block!important;}
       button{display:none!important;}
+      tr[style*="background:#1a365d"] td{background:#1a365d !important;color:#fff !important;}
+      tr[style*="background:#7f1d1d"] td{background:#7f1d1d !important;color:#fff !important;}
+      tr[style*="background:#14532d"] td{background:#14532d !important;color:#fff !important;}
     </style>
   </head><body>
     <div style="text-align:center;margin-bottom:20px;border-bottom:3px solid #b8860b;padding-bottom:16px;">
@@ -8915,7 +9348,6 @@ function saveReportAsImage(htmlContent, periodLabel, reportName) {
       ${s.phone?`<div style="font-size:11px;color:#64748b;">📞 ${s.phone}</div>`:''}
       <h3 style="font-size:16px;font-weight:900;color:#1a202c;margin:8px 0 2px;">${reportName||'تقرير'}</h3>
       ${periodLabel?`<div style="font-size:12px;color:#64748b;">الفترة: <strong>${periodLabel}</strong></div>`:''}
-      <div style="font-size:11px;color:#94a3b8;margin-top:4px;">تاريخ الطباعة: ${dateStr}</div>
     </div>
     ${htmlContent}
   </body></html>`);
@@ -11512,7 +11944,7 @@ function saveReportAsPDF(contentId, reportName) {
     <div style="text-align:center;margin-bottom:18px;border-bottom:2px solid #b8860b;padding-bottom:14px;">
       <h2 style="color:#b8860b;font-size:20px;font-weight:900;margin:0 0 4px;">${restName}</h2>
       <h3 style="font-size:15px;font-weight:800;margin:0 0 4px;">${reportName || window._printReportName || 'تقرير'}</h3>
-      <p style="font-size:11px;color:#64748b;margin:0;">${window._printPeriodLabel ? 'الفترة: ' + window._printPeriodLabel + ' — ' : ''}تاريخ الطباعة: ${dateStr}</p>
+      <p style="font-size:11px;color:#64748b;margin:0;">${window._printPeriodLabel ? 'الفترة: ' + window._printPeriodLabel : ''}</p>
     </div>
     ${el.innerHTML}
   `;
